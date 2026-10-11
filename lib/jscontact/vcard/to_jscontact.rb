@@ -130,6 +130,8 @@ module Jscontact
 
                  key = SCALARS.fetch(name)
                  converted = %w[created rev].include?(name) ? timestamp(value) : value
+                 return preserve(prop) if converted.nil?
+
                  converted = converted.downcase if name == "kind"
                  converted = normalize_language(converted) if name == "language"
                  @card[key] = converted
@@ -215,10 +217,13 @@ module Jscontact
             consumed << parameter
           end
         when "note"
-          object["created"] = timestamp(params["created"], compact: true) if params["created"]
+          if params["created"] && (created = timestamp(params["created"], compact: true))
+            object["created"] = created
+            consumed << "created"
+          end
           author = { "name" => params["author-name"], "uri" => params["author"] }.compact
           object["author"] = author unless author.empty?
-          consumed += %w[created author author-name]
+          consumed += %w[author author-name]
         when "expertise", "hobby", "interest"
           if params["level"]
             level = params["level"].downcase
@@ -395,7 +400,11 @@ module Jscontact
 
       def timestamp(value, compact: false)
         value = JCardJCal::ValueTypes.from_text(value, "timestamp", format: :vcard) if compact
-        Time.iso8601(value).utc.iso8601
+        return unless value.match?(/(?:Z|[+-]\d{2}(?::\d{2})?)\z/)
+
+        # Convert the minute separately because Ruby Time normalizes leap seconds.
+        minute = Time.iso8601("#{value[0, 17]}00#{value[19..]}").utc
+        "#{minute.strftime("%Y-%m-%dT%H:%M:")}#{value[17, 2]}Z"
       rescue ArgumentError
         raise ConversionError, "invalid vCard timestamp"
       end

@@ -36,6 +36,28 @@ RSpec.describe Jscontact::VCard do
     expect(result.dig("localizations", "ja", "titles/t/name")).to eq("調整役")
   end
 
+  it "preserves leap seconds across UTC conversion and every timestamp mapping" do
+    result = convert("FN:Clock", "REV:20161231T235960Z", "CREATED:20170101T005960+0100",
+                     "BDAY:20161231T185960-0500", "NOTE;PROP-ID=n;CREATED=20161231T235960Z:Recorded")
+    expected = "2016-12-31T23:59:60Z"
+    expect(result.values_at("updated", "created")).to eq([expected, expected])
+    expect(result.dig("notes", "n", "created")).to eq(expected)
+    expect(result.fetch("anniversaries").values.first.dig("date", "utc")).to eq(expected)
+    expect(described_class.to_jscontact(described_class.from_jscontact(result)).to_h).to eq(result)
+  end
+
+  it "retains floating timestamps without inventing a UTC offset" do
+    result = convert("FN:Clock", "REV:20260102T030405", "CREATED:20260102T030405",
+                     "NOTE;PROP-ID=n;CREATED=20260102T030405:Recorded")
+    expect(result).not_to have_key("updated")
+    expect(result).not_to have_key("created")
+    expect(result.fetch("vCardProps")).to include(["rev", {}, "timestamp", "2026-01-02T03:04:05"],
+                                                    ["created", {}, "timestamp", "2026-01-02T03:04:05"])
+    expect(result.dig("notes", "n")).to include("vCardParams" => { "created" => "20260102T030405" })
+    expect(result.dig("notes", "n")).not_to have_key("created")
+    expect(described_class.to_jscontact(described_class.from_jscontact(result)).to_h).to eq(result)
+  end
+
   it "preserves ordered name components, separators and nested extensions through both directions" do
     data = { "@type" => "Card", "version" => "2.0", "name" => { "components" => [
       { "kind" => "given", "value" => "Sample", "test.example:extra" => 7 },
