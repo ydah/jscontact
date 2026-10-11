@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Read, validate, and build JSContact 1.0 and 2.0 contact cards in Ruby. Preserve valid extension fields and optionally convert vCard 4.0 through jcard_jcal.">
+  <meta name="theme-color" content="#f8fafc">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="jscontact — Build contact cards that preserve your data">
+  <meta property="og:description" content="Read, validate, and build JSContact 1.0 and 2.0 contact cards in Ruby. Preserve valid extension fields and optionally convert vCard 4.0 through jcard_jcal.">
+  <meta property="og:url" content="https://ydah.github.io/jscontact/">
+  <title>jscontact — Build contact cards that preserve your data</title>
+  <link rel="canonical" href="https://ydah.github.io/jscontact/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="jscontact home"><img src="favicon.svg" width="32" height="32" alt=""><span>jscontact</span></a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#installation">Installation</a>
+        <a href="https://github.com/ydah/jscontact#readme">Documentation</a>
+        <a href="https://github.com/ydah/jscontact">GitHub</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main" class="container" tabindex="-1">
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-copy">
+        <p class="format">JSContact 1.0 / 2.0 · vCard 4.0</p>
+        <h1 id="title">Build contact cards that preserve your data</h1>
+        <p class="intro">Read, validate, and build JSContact 1.0 and 2.0 contact cards in Ruby. Preserve valid extension fields and optionally convert vCard 4.0 through jcard_jcal.</p>
+        <div class="actions">
+          <a class="button" href="#installation">Get started</a>
+          <a class="text-link" href="https://github.com/ydah/jscontact#readme">Read the documentation</a>
+        </div>
+        <p class="metadata"><span>Ruby 3.3+</span><a href="https://github.com/ydah/jscontact/blob/main/LICENSE.txt">MIT license</a><a href="https://rubygems.org/gems/jscontact">RubyGems</a></p>
+      </div>
+      <figure class="example" id="quick-start">
+        <figcaption><span>Quick start</span><span>Ruby</span></figcaption>
+        <pre tabindex="0" role="region" aria-label="Ruby quick start example"><code>require <span class="token-string">&quot;</span><span class="token-string">jscontact</span><span class="token-string">&quot;</span>
+
+card = JSContact::Card.build <span class="token-keyword">do</span> |contact|
+  contact.name = { full: <span class="token-string">&quot;</span><span class="token-string">Mina Sample</span><span class="token-string">&quot;</span> }
+  contact.add_email(address: <span class="token-string">&quot;</span><span class="token-string">mina@example.test</span><span class="token-string">&quot;</span>, contexts: { work: <span class="token-keyword">true</span> })
+  contact[<span class="token-string">&quot;</span><span class="token-string">example.test:customer</span><span class="token-string">&quot;</span>] = { <span class="token-string">&quot;</span><span class="token-string">number</span><span class="token-string">&quot;</span> =&gt; 42 }
+<span class="token-keyword">end</span>
+
+card.name.full                    <span class="token-comment"># =&gt; &quot;Mina Sample&quot;
+</span>card.emails[<span class="token-string">&quot;</span><span class="token-string">e1</span><span class="token-string">&quot;</span>].address         <span class="token-comment"># =&gt; &quot;mina@example.test&quot;
+</span>card.emails[<span class="token-string">&quot;</span><span class="token-string">e1</span><span class="token-string">&quot;</span>].label = <span class="token-string">&quot;</span><span class="token-string">Desk</span><span class="token-string">&quot;</span> <span class="token-comment"># updates the parent card
+</span>card.to_h                        <span class="token-comment"># independent, deep copy
+</span>json = card.to_json              <span class="token-comment"># validates before serializing
+</span>copy = JSContact.parse(json)</code></pre>
+      </figure>
+    </section>
+    <ul class="features" aria-label="Features">
+        <li><h2>Work with typed cards</h2><p>Build names, addresses, and contact methods with typed views and validated JSON serialization.</p></li>
+        <li><h2>Preserve extensions</h2><p>Keep unknown properties and map identifiers while applying patches and localized text.</p></li>
+        <li><h2>Connect to vCard</h2><p>Convert vCard 4.0 with optional jcard_jcal support and retain otherwise unmatched properties.</p></li>
+    </ul>
+    <section class="section" id="installation" aria-labelledby="installation-title">
+      <h2 id="installation-title">Installation</h2>
+      <div class="section-body">
+        <p>Add the gem to your Gemfile:</p>
+        <pre class="install-command" tabindex="0" role="region" aria-label="Gemfile entry"><code>gem "jscontact"</code></pre>
+        <p>Run <code>bundle install</code>, then try the <a href="#quick-start">quick start</a>. Requires Ruby 3.3 or later.</p>
+        <p>For supported dependencies and optional integrations, see the <a href="https://github.com/ydah/jscontact#installation">installation guide</a>.</p>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="scope-title">
+      <h2 id="scope-title">Scope &amp; documentation</h2>
+      <div class="section-body">
+        <p>The optional converter requires jcard_jcal and accepts one vCard 4.0 at a time. vCard 2.1/3.0, CardDAV synchronization, and non-Gregorian calendar arithmetic are outside scope. Some values, including top-level extension nulls, cannot be converted and raise ConversionError.</p>
+        <p><a href="https://github.com/ydah/jscontact#readme">Read the full documentation</a> for supported formats, examples, and API details.</p>
+        
+        <ul class="resource-links" aria-label="Project resources">
+          <li><a href="https://github.com/ydah/jscontact/blob/main/CHANGELOG.md">Changelog</a></li>
+          <li><a href="https://github.com/ydah/jscontact/issues">Report an issue</a></li>
+          <li><a href="https://github.com/ydah/jscontact/blob/main/SECURITY.md">Security</a></li>
+          <li><a href="https://github.com/ydah/jscontact#contributing">Contributing</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <footer class="container site-footer">
+    <div class="footer-top"><p>jscontact · Maintained by <a href="https://github.com/ydah">ydah</a></p><p>Open source under the <a href="https://github.com/ydah/jscontact/blob/main/LICENSE.txt">MIT license</a>.</p></div>
+    <nav class="related" aria-label="Related Ruby gems">
+      <p>More Ruby gems for structured data</p>
+      <ul>
+          <li><a href="https://ydah.github.io/dns_json/">dns_json</a></li>
+          <li><a href="https://ydah.github.io/iodef/">iodef</a></li>
+          <li><a href="https://ydah.github.io/jcard_jcal/">jcard_jcal</a></li>
+          <li><a href="https://ydah.github.io/jscalendar/">jscalendar</a></li>
+          <li><a href="https://ydah.github.io/sd_jwt/">sd_jwt</a></li>
+          <li><a href="https://ydah.github.io/senml/">senml</a></li>
+          <li><a href="https://ydah.github.io/yang_json/">yang_json</a></li>
+      </ul>
+    </nav>
+  </footer>
+</body>
+</html>
