@@ -1,0 +1,22 @@
+{
+  "sources": {
+    "9553": {
+      "url": "https://www.rfc-editor.org/rfc/rfc9553.xml",
+      "sha256": "fd5be29906e256e5a2075f71e890d798ff2cc82fec3699c547a5c9c4de0ee5e2"
+    },
+    "9555": {
+      "url": "https://www.rfc-editor.org/rfc/rfc9555.xml",
+      "sha256": "838790083982d061dc7352e6eac8d211927cfeccd2506e569e3d055a86ad38cc"
+    },
+    "9610": {
+      "url": "https://www.rfc-editor.org/rfc/rfc9610.xml",
+      "sha256": "04919f7a45e66d26b3eff68489d346d341e4a9444df0e2795c1a17717328f3f1"
+    },
+    "9982": {
+      "url": "https://www.rfc-editor.org/rfc/rfc9982.xml",
+      "sha256": "78b3bbb43efae3db7fa13b5506e512fa5cff69d9716afc8feaefd2c9b5bdd03a"
+    }
+  },
+  "example_count": 97,
+  "fixtures_sha256": "8b4b85ab0be1e179c0d8ff9cd02b966ff8197476e11692a85f7d71845f77913b"
+}

@@ -1,0 +1,13 @@
+{
+  "checked_on": "2026-10-11",
+  "sources": {
+    "jscontact.xml": {
+      "url": "https://www.iana.org/assignments/jscontact/jscontact.xml",
+      "sha256": "02f82c6ebfd451a22ff23ef3d2b6d5bc4d81256a50e428baa0dbade1c66d8130"
+    },
+    "language-subtag-registry.txt": {
+      "url": "https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry",
+      "sha256": "755fad43283be7b41ebe3c89ad054b6eaf928f404f9c0edb74799e0eab74beb1"
+    }
+  }
+}

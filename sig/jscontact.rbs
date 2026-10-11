@@ -1,0 +1,495 @@
+module Jscontact
+  VERSION: String
+  DEFAULT_LIMITS: Hash[Symbol, Integer]
+  MAX_INTEGER: Integer
+  SCHEMA: Hash[String, untyped]
+  ENUMS: Hash[String, Array[String]]
+
+  def self.parse: (String source, ?strict: bool, **Integer limits) -> Card
+  def self.upgrade: (Card | Hash[String, untyped] card) -> Card
+  def self.generate_json: (untyped value, ?untyped options) -> String
+  def self.deep_copy: (untyped value, ?max_depth: Integer, ?depth: Integer, ?ancestors: Array[Integer], ?pointer: String) -> untyped
+  def self.deep_freeze: (untyped value) -> untyped
+  def self.pointer: (String parent, untyped key) -> String
+
+  class Violation
+    attr_accessor pointer: String
+    attr_accessor message: String
+    def self.new: (pointer: String, message: String) -> instance
+  end
+
+  class Error < StandardError
+    attr_reader pointer: String?
+    def initialize: (?String? message, ?pointer: String?) -> void
+  end
+  class ParseError < Error
+  end
+  class ConversionError < Error
+  end
+  class LimitError < Error
+  end
+  class ValidationError < Error
+    attr_reader errors: Array[Violation]
+    def initialize: (String | Array[Violation] errors, ?pointer: String?) -> void
+  end
+
+  class Validator
+    def initialize: (?validate_localizations: bool, **Integer limits) -> void
+    def validate: (untyped value, ?type: String, ?root: bool) -> Array[Violation]
+    def validate_json: (untyped value, ?pointer: String) -> Array[Violation]
+  end
+
+  class Model
+    attr_reader limits: Hash[Symbol, Integer]
+    def initialize: (?Hash[untyped, untyped]? data, ?strict: bool, ?explicit_types: bool, **Integer limits) -> void
+    def self.wrap: (Hash[String, untyped] data, Hash[Symbol, Integer] limits, bool explicit_types) -> instance
+    def []: (String | Symbol name) -> untyped
+    def []=: (String | Symbol name, untyped value) -> untyped
+    def key?: (String | Symbol name) -> bool
+    def delete: (String | Symbol name) -> untyped
+    def to_h: () -> Hash[String, untyped]
+    def to_json: (?untyped options) -> String
+    def errors: () -> Array[Violation]
+    def warnings: () -> Array[Violation]
+    def valid?: () -> bool
+    def validate!: () -> self
+    def ==: (untyped other) -> bool
+  end
+
+  class IdMap
+    include Enumerable[[String, untyped]]
+    def initialize: (?Hash[String, untyped] data, type: String, ?limits: Hash[Symbol, Integer], ?explicit_types: bool, ?validate_ids: bool) -> void
+    def []: (String | Symbol id) -> untyped
+    def []=: (String | Symbol id, untyped value) -> untyped
+    def each: () { (String, untyped) -> untyped } -> self
+            | () -> Enumerator[[String, untyped], self]
+    def keys: () -> Array[String]
+    def values: () -> Array[untyped]
+    def size: () -> Integer
+    def length: () -> Integer
+    def empty?: () -> bool
+    def key?: (String | Symbol id) -> bool
+    def delete: (String | Symbol id) -> untyped
+    def add: (untyped value, ?prefix: String) -> String
+    def to_h: () -> Hash[String, untyped]
+  end
+
+  class PatchObject
+    def initialize: (Hash[String, untyped] patches, ?max_patches: Integer, **Integer limits) -> void
+    def to_h: () -> Hash[String, untyped]
+    def apply: (Hash[String, untyped] data, ?validate: bool) -> Hash[String, untyped]
+  end
+
+  class Card < Model
+    def self.build: (?version: String, ?explicit_types: bool, **untyped properties) ?{ (Card) -> void } -> Card
+    def add_email: (**untyped properties) -> String
+    def localized: (String language) -> Card
+    attr_accessor version: String
+    attr_accessor created: String?
+    attr_accessor kind: String
+    attr_accessor language: String?
+    attr_accessor members: Hash[String, untyped]?
+    attr_accessor prodId: String?
+    attr_accessor prod_id: String?
+    def relatedTo: () -> IdMap?
+    def relatedTo=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def related_to: () -> IdMap?
+    def related_to=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    attr_accessor uid: String?
+    attr_accessor updated: String?
+    def name: () -> Name?
+    def name=: (Name? | Hash[untyped, untyped] value) -> untyped
+    def nicknames: () -> IdMap?
+    def nicknames=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def organizations: () -> IdMap?
+    def organizations=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def speakToAs: () -> SpeakToAs?
+    def speakToAs=: (SpeakToAs? | Hash[untyped, untyped] value) -> untyped
+    def speak_to_as: () -> SpeakToAs?
+    def speak_to_as=: (SpeakToAs? | Hash[untyped, untyped] value) -> untyped
+    def titles: () -> IdMap?
+    def titles=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def emails: () -> IdMap?
+    def emails=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def onlineServices: () -> IdMap?
+    def onlineServices=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def online_services: () -> IdMap?
+    def online_services=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def phones: () -> IdMap?
+    def phones=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def preferredLanguages: () -> IdMap?
+    def preferredLanguages=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def preferred_languages: () -> IdMap?
+    def preferred_languages=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def calendars: () -> IdMap?
+    def calendars=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def schedulingAddresses: () -> IdMap?
+    def schedulingAddresses=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def scheduling_addresses: () -> IdMap?
+    def scheduling_addresses=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def addresses: () -> IdMap?
+    def addresses=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def cryptoKeys: () -> IdMap?
+    def cryptoKeys=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def crypto_keys: () -> IdMap?
+    def crypto_keys=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def directories: () -> IdMap?
+    def directories=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def links: () -> IdMap?
+    def links=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def media: () -> IdMap?
+    def media=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    attr_accessor localizations: Hash[String, Hash[String, untyped]]?
+    def anniversaries: () -> IdMap?
+    def anniversaries=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    attr_accessor keywords: Hash[String, untyped]?
+    def notes: () -> IdMap?
+    def notes=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def personalInfo: () -> IdMap?
+    def personalInfo=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    def personal_info: () -> IdMap?
+    def personal_info=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+    attr_accessor vCardProps: Array[untyped]?
+    attr_accessor v_card_props: Array[untyped]?
+  end
+
+  class Relation < Model
+    attr_accessor relation: Hash[String, untyped]
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Name < Model
+    attr_accessor components: Array[untyped]?
+    attr_accessor isOrdered: bool
+    attr_accessor is_ordered: bool
+    attr_accessor defaultSeparator: String?
+    attr_accessor default_separator: String?
+    attr_accessor full: String?
+    attr_accessor sortAs: Hash[String, untyped]?
+    attr_accessor sort_as: Hash[String, untyped]?
+    attr_accessor phoneticScript: String?
+    attr_accessor phonetic_script: String?
+    attr_accessor phoneticSystem: String?
+    attr_accessor phonetic_system: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class NameComponent < Model
+    attr_accessor value: String
+    attr_accessor kind: String
+    attr_accessor phonetic: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Nickname < Model
+    attr_accessor name: String
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Organization < Model
+    attr_accessor name: String?
+    attr_accessor units: Array[untyped]?
+    attr_accessor sortAs: String?
+    attr_accessor sort_as: String?
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class OrgUnit < Model
+    attr_accessor name: String
+    attr_accessor sortAs: String?
+    attr_accessor sort_as: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class SpeakToAs < Model
+    attr_accessor grammaticalGender: String?
+    attr_accessor grammatical_gender: String?
+    def pronouns: () -> IdMap?
+    def pronouns=: (IdMap? | Hash[untyped, untyped] value) -> untyped
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Pronouns < Model
+    attr_accessor pronouns: String
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Title < Model
+    attr_accessor name: String
+    attr_accessor kind: String
+    attr_accessor organizationId: String?
+    attr_accessor organization_id: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class EmailAddress < Model
+    attr_accessor address: String
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor label: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class OnlineService < Model
+    attr_accessor service: String?
+    attr_accessor uri: String?
+    attr_accessor user: String?
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor label: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Phone < Model
+    attr_accessor number: String
+    attr_accessor features: Hash[String, untyped]?
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor label: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class LanguagePref < Model
+    attr_accessor language: String
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Calendar < Model
+    attr_accessor kind: String
+    attr_accessor uri: String
+    attr_accessor mediaType: String?
+    attr_accessor media_type: String?
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor label: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class SchedulingAddress < Model
+    attr_accessor uri: String
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor label: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Address < Model
+    attr_accessor components: Array[untyped]?
+    attr_accessor isOrdered: bool
+    attr_accessor is_ordered: bool
+    attr_accessor countryCode: String?
+    attr_accessor country_code: String?
+    attr_accessor coordinates: String?
+    attr_accessor timeZone: String?
+    attr_accessor time_zone: String?
+    attr_accessor full: String?
+    attr_accessor defaultSeparator: String?
+    attr_accessor default_separator: String?
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor phoneticScript: String?
+    attr_accessor phonetic_script: String?
+    attr_accessor phoneticSystem: String?
+    attr_accessor phonetic_system: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class AddressComponent < Model
+    attr_accessor value: String
+    attr_accessor kind: String
+    attr_accessor phonetic: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class CryptoKey < Model
+    attr_accessor kind: String?
+    attr_accessor uri: String
+    attr_accessor mediaType: String?
+    attr_accessor media_type: String?
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor label: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Directory < Model
+    attr_accessor kind: String
+    attr_accessor uri: String
+    attr_accessor mediaType: String?
+    attr_accessor media_type: String?
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor label: String?
+    attr_accessor listAs: Integer?
+    attr_accessor list_as: Integer?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Link < Model
+    attr_accessor kind: String?
+    attr_accessor uri: String
+    attr_accessor mediaType: String?
+    attr_accessor media_type: String?
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor label: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Media < Model
+    attr_accessor kind: String
+    attr_accessor uri: String
+    attr_accessor mediaType: String?
+    attr_accessor media_type: String?
+    attr_accessor contexts: Hash[String, untyped]?
+    attr_accessor pref: Integer?
+    attr_accessor label: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Anniversary < Model
+    attr_accessor kind: String
+    def date: () -> (PartialDate | Timestamp)
+    def date=: ((PartialDate | Timestamp) | Hash[untyped, untyped] value) -> untyped
+    def place: () -> Address?
+    def place=: (Address? | Hash[untyped, untyped] value) -> untyped
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class PartialDate < Model
+    attr_accessor year: Integer?
+    attr_accessor month: Integer?
+    attr_accessor day: Integer?
+    attr_accessor calendarScale: String?
+    attr_accessor calendar_scale: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Timestamp < Model
+    attr_accessor utc: String
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Note < Model
+    attr_accessor note: String
+    attr_accessor created: String?
+    def author: () -> Author?
+    def author=: (Author? | Hash[untyped, untyped] value) -> untyped
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class Author < Model
+    attr_accessor name: String?
+    attr_accessor uri: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+
+  class PersonalInfo < Model
+    attr_accessor kind: String
+    attr_accessor value: String
+    attr_accessor level: String?
+    attr_accessor listAs: Integer?
+    attr_accessor list_as: Integer?
+    attr_accessor label: String?
+    attr_accessor vCardParams: Hash[String, untyped]?
+    attr_accessor v_card_params: Hash[String, untyped]?
+    attr_accessor vCardName: String?
+    attr_accessor v_card_name: String?
+  end
+end
+
+module Jscontact::VCard
+  def self.to_jscontact: (String vcard_text, ?version: String) -> Jscontact::Card
+  def self.from_jscontact: (Jscontact::Card | Hash[String, untyped] card) -> String
+end
+
+module JSContact = Jscontact

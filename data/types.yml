@@ -1,0 +1,927 @@
+# Original validation metadata implementing RFC 9553, 9555, 9610 and 9982.
+---
+Card:
+  reference: RFC9553 §2
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §2.1.1
+      required: true
+    version:
+      type: Version
+      required: true
+      reference: RFC9553 §2.1.2
+    created:
+      type: UTCDateTime
+      required: false
+      reference: RFC9553 §2.1.3
+    kind:
+      type: Enum:cardKind
+      required: false
+      reference: RFC9553 §2.1.4
+      default: individual
+    language:
+      type: LanguageTag
+      required: false
+      reference: RFC9553 §2.1.5
+    members:
+      type: String[True]
+      required: false
+      reference: RFC9553 §2.1.6
+    prodId:
+      type: NonEmptyString
+      required: false
+      reference: RFC9553 §2.1.7
+    relatedTo:
+      type: String[Relation]
+      required: false
+      reference: RFC9553 §2.1.8
+    uid:
+      type: String
+      required: false
+      reference: RFC9553 §2.1.9; RFC9982 §4
+      required_versions:
+      - '1.0'
+    updated:
+      type: UTCDateTime
+      required: false
+      reference: RFC9553 §2.1.10
+    name:
+      type: Name
+      required: false
+      reference: RFC9553 §2.2.1
+    nicknames:
+      type: Id[Nickname]
+      required: false
+      reference: RFC9553 §2.2.2
+    organizations:
+      type: Id[Organization]
+      required: false
+      reference: RFC9553 §2.2.3
+    speakToAs:
+      type: SpeakToAs
+      required: false
+      reference: RFC9553 §2.2.4
+    titles:
+      type: Id[Title]
+      required: false
+      reference: RFC9553 §2.2.5
+    emails:
+      type: Id[EmailAddress]
+      required: false
+      reference: RFC9553 §2.3.1
+    onlineServices:
+      type: Id[OnlineService]
+      required: false
+      reference: RFC9553 §2.3.2
+    phones:
+      type: Id[Phone]
+      required: false
+      reference: RFC9553 §2.3.3
+    preferredLanguages:
+      type: Id[LanguagePref]
+      required: false
+      reference: RFC9553 §2.3.4
+    calendars:
+      type: Id[Calendar]
+      required: false
+      reference: RFC9553 §2.4.1
+    schedulingAddresses:
+      type: Id[SchedulingAddress]
+      required: false
+      reference: RFC9553 §2.4.2
+    addresses:
+      type: Id[Address]
+      required: false
+      reference: RFC9553 §2.5.1
+    cryptoKeys:
+      type: Id[CryptoKey]
+      required: false
+      reference: RFC9553 §2.6.1
+    directories:
+      type: Id[Directory]
+      required: false
+      reference: RFC9553 §2.6.2
+    links:
+      type: Id[Link]
+      required: false
+      reference: RFC9553 §2.6.3
+    media:
+      type: Id[Media]
+      required: false
+      reference: RFC9553 §2.6.4
+    localizations:
+      type: LanguageTag[PatchObject]
+      required: false
+      reference: RFC9553 §2.7.1
+    anniversaries:
+      type: Id[Anniversary]
+      required: false
+      reference: RFC9553 §2.8.1
+    keywords:
+      type: String[True]
+      required: false
+      reference: RFC9553 §2.8.2
+    notes:
+      type: Id[Note]
+      required: false
+      reference: RFC9553 §2.8.3
+    personalInfo:
+      type: Id[PersonalInfo]
+      required: false
+      reference: RFC9553 §2.8.4
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+    vCardProps:
+      type: JCardProp[]
+      reference: RFC9555 §2.15.1
+  reserved:
+  - id
+  - addressBookIds
+Relation:
+  reference: RFC9553 §2.1.8
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    relation:
+      type: EnumMap:relation
+      required: false
+      reference: RFC9553 §2.1.8
+      default: {}
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Name:
+  reference: RFC9553 §2.2.1.1
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    components:
+      type: NameComponent[]
+      required: false
+      reference: RFC9553 §2.2.1.1
+    isOrdered:
+      type: Boolean
+      required: false
+      reference: RFC9553 §2.2.1.1
+      default: false
+    defaultSeparator:
+      type: String
+      required: false
+      reference: RFC9553 §2.2.1.1
+    full:
+      type: String
+      required: false
+      reference: RFC9553 §2.2.1.1
+    sortAs:
+      type: String[String]
+      required: false
+      reference: RFC9553 §2.2.1.1
+    phoneticScript:
+      type: Script
+      required: false
+      reference: RFC9553 §2.2.1.1
+    phoneticSystem:
+      type: Enum:phoneticSystem
+      required: false
+      reference: RFC9553 §2.2.1.1
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+NameComponent:
+  reference: RFC9553 §2.2.1.2
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    value:
+      type: String
+      required: true
+      reference: RFC9553 §2.2.1.2
+    kind:
+      type: Enum:nameKind
+      required: true
+      reference: RFC9553 §2.2.1.2
+    phonetic:
+      type: String
+      required: false
+      reference: RFC9553 §2.2.1.2
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Nickname:
+  reference: RFC9553 §2.2.2
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    name:
+      type: String
+      required: true
+      reference: RFC9553 §2.2.2
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.2.2
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.2.2
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Organization:
+  reference: RFC9553 §2.2.3
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    name:
+      type: String
+      required: false
+      reference: RFC9553 §2.2.3
+    units:
+      type: OrgUnit[]
+      required: false
+      reference: RFC9553 §2.2.3
+    sortAs:
+      type: String
+      required: false
+      reference: RFC9553 §2.2.3
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.2.3
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+OrgUnit:
+  reference: RFC9553 §2.2.3
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    name:
+      type: String
+      required: true
+      reference: RFC9553 §2.2.3
+    sortAs:
+      type: String
+      required: false
+      reference: RFC9553 §2.2.3
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+SpeakToAs:
+  reference: RFC9553 §2.2.4
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    grammaticalGender:
+      type: Enum:gender
+      required: false
+      reference: RFC9553 §2.2.4
+    pronouns:
+      type: Id[Pronouns]
+      required: false
+      reference: RFC9553 §2.2.4
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Pronouns:
+  reference: RFC9553 §2.2.4
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    pronouns:
+      type: String
+      required: true
+      reference: RFC9553 §2.2.4
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.2.4
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.2.4
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Title:
+  reference: RFC9553 §2.2.5
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    name:
+      type: String
+      required: true
+      reference: RFC9553 §2.2.5
+    kind:
+      type: Enum:titleKind
+      required: false
+      reference: RFC9553 §2.2.5
+      default: title
+    organizationId:
+      type: Id
+      required: false
+      reference: RFC9553 §2.2.5
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+EmailAddress:
+  reference: RFC9553 §2.3.1
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    address:
+      type: Email
+      required: true
+      reference: RFC9553 §2.3.1
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.3.1
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.3.1
+    label:
+      type: String
+      required: false
+      reference: RFC9553 §2.3.1
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+OnlineService:
+  reference: RFC9553 §2.3.2
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    service:
+      type: String
+      required: false
+      reference: RFC9553 §2.3.2
+    uri:
+      type: URI
+      required: false
+      reference: RFC9553 §2.3.2
+    user:
+      type: String
+      required: false
+      reference: RFC9553 §2.3.2
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.3.2
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.3.2
+    label:
+      type: String
+      required: false
+      reference: RFC9553 §2.3.2
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Phone:
+  reference: RFC9553 §2.3.3
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    number:
+      type: String
+      required: true
+      reference: RFC9553 §2.3.3
+    features:
+      type: EnumMap:phoneFeature
+      required: false
+      reference: RFC9553 §2.3.3
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.3.3
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.3.3
+    label:
+      type: String
+      required: false
+      reference: RFC9553 §2.3.3
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+LanguagePref:
+  reference: RFC9553 §2.3.4
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    language:
+      type: LanguageTag
+      required: true
+      reference: RFC9553 §2.3.4
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.3.4
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.3.4
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Calendar:
+  reference: RFC9553 §2.4.1
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    kind:
+      type: Enum:calendarKind
+      required: true
+      reference: RFC9553 §2.4.1
+    uri:
+      type: URI
+      required: true
+      reference: RFC9553 §2.4.1
+    mediaType:
+      type: MediaType
+      required: false
+      reference: RFC9553 §2.4.1
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.4.1
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.4.1
+    label:
+      type: String
+      required: false
+      reference: RFC9553 §2.4.1
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+SchedulingAddress:
+  reference: RFC9553 §2.4.2
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    uri:
+      type: URI
+      required: true
+      reference: RFC9553 §2.4.2
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.4.2
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.4.2
+    label:
+      type: String
+      required: false
+      reference: RFC9553 §2.4.2
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Address:
+  reference: RFC9553 §2.5.1.1
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    components:
+      type: AddressComponent[]
+      required: false
+      reference: RFC9553 §2.5.1.1
+    isOrdered:
+      type: Boolean
+      required: false
+      reference: RFC9553 §2.5.1.1
+      default: false
+    countryCode:
+      type: CountryCode
+      required: false
+      reference: RFC9553 §2.5.1.1
+    coordinates:
+      type: GeoURI
+      required: false
+      reference: RFC9553 §2.5.1.1
+    timeZone:
+      type: TimeZone
+      required: false
+      reference: RFC9553 §2.5.1.1
+    full:
+      type: String
+      required: false
+      reference: RFC9553 §2.5.1.1
+    defaultSeparator:
+      type: String
+      required: false
+      reference: RFC9553 §2.5.1.1
+    contexts:
+      type: EnumMap:addressContext
+      required: false
+      reference: RFC9553 §2.5.1.1
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.5.1.1
+    phoneticScript:
+      type: Script
+      required: false
+      reference: RFC9553 §2.5.1.1
+    phoneticSystem:
+      type: Enum:phoneticSystem
+      required: false
+      reference: RFC9553 §2.5.1.1
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+AddressComponent:
+  reference: RFC9553 §2.5.1.2
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    value:
+      type: String
+      required: true
+      reference: RFC9553 §2.5.1.2
+    kind:
+      type: Enum:addressKind
+      required: true
+      reference: RFC9553 §2.5.1.2
+    phonetic:
+      type: String
+      required: false
+      reference: RFC9553 §2.5.1.2
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+CryptoKey:
+  reference: RFC9553 §2.6.1
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    kind:
+      type: String
+      required: false
+      reference: RFC9553 §2.6.1
+    uri:
+      type: URI
+      required: true
+      reference: RFC9553 §2.6.1
+    mediaType:
+      type: MediaType
+      required: false
+      reference: RFC9553 §2.6.1
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.6.1
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.6.1
+    label:
+      type: String
+      required: false
+      reference: RFC9553 §2.6.1
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Directory:
+  reference: RFC9553 §2.6.2
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    kind:
+      type: Enum:directoryKind
+      required: true
+      reference: RFC9553 §2.6.2
+    uri:
+      type: URI
+      required: true
+      reference: RFC9553 §2.6.2
+    mediaType:
+      type: MediaType
+      required: false
+      reference: RFC9553 §2.6.2
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.6.2
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.6.2
+    label:
+      type: String
+      required: false
+      reference: RFC9553 §2.6.2
+    listAs:
+      type: PositiveInt
+      required: false
+      reference: RFC9553 §2.6.2
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Link:
+  reference: RFC9553 §2.6.3
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    kind:
+      type: Enum:linkKind
+      required: false
+      reference: RFC9553 §2.6.3
+    uri:
+      type: URI
+      required: true
+      reference: RFC9553 §2.6.3
+    mediaType:
+      type: MediaType
+      required: false
+      reference: RFC9553 §2.6.3
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.6.3
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.6.3
+    label:
+      type: String
+      required: false
+      reference: RFC9553 §2.6.3
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Media:
+  reference: RFC9553 §2.6.4
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    kind:
+      type: Enum:mediaKind
+      required: true
+      reference: RFC9553 §2.6.4
+    uri:
+      type: URI
+      required: true
+      reference: RFC9553 §2.6.4
+    mediaType:
+      type: MediaType
+      required: false
+      reference: RFC9553 §2.6.4
+    contexts:
+      type: Contexts
+      required: false
+      reference: RFC9553 §2.6.4
+    pref:
+      type: Preference
+      required: false
+      reference: RFC9553 §2.6.4
+    label:
+      type: String
+      required: false
+      reference: RFC9553 §2.6.4
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+  reserved:
+  - blobId
+Anniversary:
+  reference: RFC9553 §2.8.1
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    kind:
+      type: Enum:anniversaryKind
+      required: true
+      reference: RFC9553 §2.8.1
+    date:
+      type: PartialDate|Timestamp
+      required: true
+      reference: RFC9553 §2.8.1
+      defaultType: PartialDate
+    place:
+      type: Address
+      required: false
+      reference: RFC9553 §2.8.1
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+PartialDate:
+  reference: RFC9553 §2.8.1
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    year:
+      type: UnsignedInt
+      required: false
+      reference: RFC9553 §2.8.1
+    month:
+      type: Month
+      required: false
+      reference: RFC9553 §2.8.1
+    day:
+      type: Day
+      required: false
+      reference: RFC9553 §2.8.1
+    calendarScale:
+      type: CalendarScale
+      required: false
+      reference: RFC9553 §2.8.1
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Timestamp:
+  reference: RFC9553 §2.8.1
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    utc:
+      type: UTCDateTime
+      required: true
+      reference: RFC9553 §2.8.1
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Note:
+  reference: RFC9553 §2.8.3
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    note:
+      type: String
+      required: true
+      reference: RFC9553 §2.8.3
+    created:
+      type: UTCDateTime
+      required: false
+      reference: RFC9553 §2.8.3
+    author:
+      type: Author
+      required: false
+      reference: RFC9553 §2.8.3
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+Author:
+  reference: RFC9553 §2.8.3
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    name:
+      type: String
+      required: false
+      reference: RFC9553 §2.8.3
+    uri:
+      type: URI
+      required: false
+      reference: RFC9553 §2.8.3
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
+PersonalInfo:
+  reference: RFC9553 §2.8.4
+  properties:
+    "@type":
+      type: String
+      reference: RFC9553 §1.3.4
+    kind:
+      type: Enum:personalKind
+      required: true
+      reference: RFC9553 §2.8.4
+    value:
+      type: String
+      required: true
+      reference: RFC9553 §2.8.4
+    level:
+      type: Enum:level
+      required: false
+      reference: RFC9553 §2.8.4
+    listAs:
+      type: PositiveInt
+      required: false
+      reference: RFC9553 §2.8.4
+    label:
+      type: String
+      required: false
+      reference: RFC9553 §2.8.4
+    vCardParams:
+      type: VCardParams
+      reference: RFC9555 §2.15.2
+    vCardName:
+      type: VCardName
+      reference: RFC9555 §2.15.3
