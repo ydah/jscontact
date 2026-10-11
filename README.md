@@ -1,11 +1,32 @@
-# JSContact
+<h1 align="center">JSContact</h1>
 
-[![Ruby](https://github.com/ydah/jscontact/actions/workflows/main.yml/badge.svg)](https://github.com/ydah/jscontact/actions/workflows/main.yml)
+<p align="center">JSON contact cards with validation and vCard conversion.</p>
+
+<p align="center">
+  <a href="https://rubygems.org/gems/jscontact"><img src="https://img.shields.io/gem/v/jscontact" alt="Gem version"></a>
+  <a href="https://github.com/ydah/jscontact/actions/workflows/main.yml"><img src="https://github.com/ydah/jscontact/actions/workflows/main.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://www.ruby-lang.org/"><img src="https://img.shields.io/badge/Ruby-%3E%3D%203.3-CC342D?logo=ruby&amp;logoColor=white" alt="Ruby 3.3 or later"></a>
+  <a href="LICENSE.txt"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License"></a>
+</p>
+
+<p align="center">
+  <a href="#installation">Installation</a> &middot;
+  <a href="#quick-start">Quick start</a> &middot;
+  <a href="#supported-scope">Supported scope</a> &middot;
+  <a href="#development">Development</a> &middot;
+  <a href="#license">License</a>
+</p>
 
 Parse, validate, build, and convert JSContact contact cards in Ruby. Supports
 [RFC 9553](https://www.rfc-editor.org/rfc/rfc9553),
 [RFC 9555](https://www.rfc-editor.org/rfc/rfc9555), and
 [RFC 9982](https://www.rfc-editor.org/rfc/rfc9982).
+
+## Features
+
+- Build typed JSContact 2.0 cards and read existing 1.0 cards.
+- Apply patches and localizations while preserving vendor extensions.
+- Convert vCard 4.0 through an optional jcard_jcal integration.
 
 Unknown properties, vendor extensions, and map identifiers survive JSON round
 trips. New cards use JSContact 2.0; reading a 1.0 card keeps its version until you
@@ -15,16 +36,20 @@ explicitly upgrade it.
 
 Requires Ruby 3.3 or later. CI also tests JRuby and TruffleRuby on Linux and macOS.
 
+Add the gem to your Gemfile:
+
 ```ruby
 gem "jscontact"
 # Add only when using the optional vCard converter:
 gem "jcard_jcal", "~> 0.1.0"
 ```
 
+Then run `bundle install`.
+
 The JSON API depends on `json` and `tzinfo`. On systems without a zoneinfo database
 (such as Windows), also install `tzinfo-data` for time zone and country validation.
 
-## Read and build cards
+## Quick start
 
 ```ruby
 require "jscontact"
@@ -124,6 +149,8 @@ vCard 4.0. A missing UID stays absent when converting to JSContact 2.0. Requesti
 Conversion preserves data, rather than the original text's property order,
 folding, or choice of equivalent representation. Date forms without a JSContact
 equivalent and unmatched birth/death place properties are retained in `vCardProps`.
+Timestamp conversion preserves leap seconds. Timestamps without a UTC offset
+remain in `vCardProps` or `vCardParams`, since no UTC instant can be inferred.
 
 JSContact date fields use the Gregorian calendar even when `calendarScale` names
 another calendar. The converter preserves non-Gregorian vCard CALSCALE properties
@@ -204,6 +231,10 @@ workflow `release.yml`, and GitHub environment `release`. After checks pass, upd
 the gem version and CHANGELOG, then push the matching `vVERSION` tag. The workflow
 tests, builds, publishes through OIDC, and creates a GitHub release from that
 version's CHANGELOG entry. A version already on RubyGems is not published again.
+
+## Contributing
+
+Bug reports and pull requests are welcome on [GitHub](https://github.com/ydah/jscontact/issues). See [Development](#development) for the checks to run before submitting a change. Report security vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
 
 ## License
 
