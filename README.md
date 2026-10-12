@@ -23,19 +23,9 @@ Parse, validate, build, and convert JSContact contact cards in Ruby. Supports
 [RFC 9555](https://www.rfc-editor.org/rfc/rfc9555), and
 [RFC 9982](https://www.rfc-editor.org/rfc/rfc9982).
 
-## Features
-
-- Build typed JSContact 2.0 cards and read existing 1.0 cards.
-- Apply patches and localizations while preserving vendor extensions.
-- Convert vCard 4.0 through an optional jcard_jcal integration.
-
-Unknown properties, vendor extensions, and map identifiers survive JSON round
-trips. New cards use JSContact 2.0; reading a 1.0 card keeps its version until you
-explicitly upgrade it.
-
 ## Installation
 
-Requires Ruby 3.3 or later. CI also tests JRuby and TruffleRuby on Linux and macOS.
+Requires Ruby 3.3 or later. Supports CRuby, JRuby, and TruffleRuby.
 
 Add the gem to your Gemfile:
 
@@ -100,6 +90,7 @@ Ruby values, and resource-limit violations still raise. Serialization is always
 strict. `ValidationError#errors` contains every collected `Violation`, with a JSON
 Pointer and message; the empty pointer identifies the document root.
 
+New cards use version 2.0; parsed 1.0 cards retain their version until upgraded.
 Version 1.0 requires `uid`; version 2.0 permits it to be absent. Upgrading changes
 only the version, without inventing a UID or renumbering map identifiers. Unknown
 properties with valid names are preserved. Unknown enum values are reported as
@@ -138,14 +129,10 @@ Only the optional entrypoint loads `jcard_jcal`. Conversion accepts exactly one
 vCard 4.0. A missing UID stays absent when converting to JSContact 2.0. Requesting
 `version: "1.0"` emits a deprecation warning and supplies a stable UID if necessary.
 
-| RFC 9555 rules | Support |
-| --- | --- |
-| Sections 2.2–2.3: value types and parameters | Both directions, including PROP-ID, ALTID, LANGUAGE, and JSCOMPS |
-| Sections 2.4–2.6: general properties, identification, delivery addresses | Both directions, including phonetic values |
-| Sections 2.7–2.10: communication, geography, organizations, personal information | Both directions |
-| Sections 2.11–2.14: explanatory, security, calendar, and extended properties | Both directions |
-| Section 2.15: unmatched properties and parameters | Retained as `vCardProps`, `vCardParams`, and `vCardName` |
-| Section 3: JSContact to vCard | Native properties plus JSPROP/JSPTR for otherwise unrepresentable data |
+Conversion follows RFC 9555 in both directions, including phonetic values,
+PROP-ID, ALTID, LANGUAGE, and JSCOMPS. Unmatched properties and parameters use
+`vCardProps`, `vCardParams`, and `vCardName`; JSContact values without a native
+vCard form use JSPROP/JSPTR.
 
 Conversion preserves data, rather than the original text's property order,
 folding, or choice of equivalent representation. Date forms without a JSContact
@@ -196,42 +183,25 @@ JSContact.parse(json, max_input_size: 1_048_576, max_depth: 16, max_map_size: 50
 ```
 
 The gem never fetches resource URIs or resolves linked contacts. vCard text parsing
-also uses `jcard_jcal`'s own parser limits. See [SECURITY.md](SECURITY.md) for reporting
-vulnerabilities.
+also uses `jcard_jcal`'s own parser limits.
 
 ## Development
 
 ```sh
 bundle install
-bundle exec rake                      # fetch and verify external RFC inputs, then test
-COVERAGE=1 bundle exec rake            # minimum 90% line coverage
+bundle exec rake
+COVERAGE=1 bundle exec rake
 bundle exec rbs -I sig validate
 bundle exec ruby script/check_syntax.rb
 bundle exec ruby script/check_licenses.rb
-bundle exec ruby script/benchmark.rb   # time, allocation and RSS measurements at limits
-bundle exec ruby script/update_registry.rb           # verify pinned IANA registry coverage
-bundle exec ruby script/update_registry.rb --refresh # audit current IANA data and update pins
+bundle exec ruby script/benchmark.rb
+bundle exec ruby script/update_registry.rb
+bundle exec ruby script/update_registry.rb --refresh
 ```
 
-The suite checks 97 generated RFC examples, both directions of 54 vCard conversion
-pairs, malformed input, patches, limits, and deterministic random round trips.
-See [conformance notes](docs/conformance.md) for extraction corrections, reported
-errata, and the current comparison scope.
-The [boundary measurements](docs/performance.md) explain the default limits.
-
-RFC originals, extracted examples, and IANA downloads
-live only in ignored `tmp/` directories. Downloads retain their applicable notices;
-RFC source hashes and the generated corpus fingerprint are checked before testing.
-The packaged gem contains library code, original schema metadata, RBS, and user
-documentation, excluding test corpora and third-party source code.
-
-## Release
-
-Configure RubyGems Trusted Publishing for owner `ydah`, repository `jscontact`,
-workflow `release.yml`, and GitHub environment `release`. After checks pass, update
-the gem version and CHANGELOG, then push the matching `vVERSION` tag. The workflow
-tests, builds, publishes through OIDC, and creates a GitHub release from that
-version's CHANGELOG entry. A version already on RubyGems is not published again.
+The first test run downloads RFC fixtures into `tmp/`; later runs reuse the cache.
+See [conformance notes](docs/conformance.md) for fixture and registry maintenance,
+and [boundary measurements](docs/performance.md) for the default resource limits.
 
 ## Contributing
 
@@ -239,8 +209,4 @@ Bug reports and pull requests are welcome on [GitHub](https://github.com/ydah/js
 
 ## License
 
-The Ruby library is available under the [MIT License](LICENSE.txt). Added runtime
-and development libraries must offer MIT terms, including transitive dependencies;
-Ruby runtimes, standard libraries, and bundled tools are explicit exceptions.
-External RFC and registry test inputs retain their notices and are not included
-in the gem. See [provenance and dependency review](docs/provenance.md).
+Released under the [MIT License](LICENSE.txt).
